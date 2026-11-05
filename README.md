@@ -44,3 +44,11 @@ make clean
 ```
 
 Precompiled binaries and generated kernel build files are excluded. Source was preserved during extraction; the kernel module has not been built or run as part of this repository packaging.
+
+## Shutdown regression test
+
+Run `python3 tests/test_shutdown.py` with GCC available. The test compiles the
+actual `DEACTIVATING` branch with stubbed kernel services and checks all 160
+combinations of starting floor and destination subsets, including an empty car.
+Before the shutdown fix, 64/160 passed; after it, 160/160 pass.
+This is a user-space logic test, not a kernel runtime or concurrency test.

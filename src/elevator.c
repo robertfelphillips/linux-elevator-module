@@ -132,10 +132,18 @@ static int elevator_run(void *data) {
                 mutex_unlock(&elevator_mutex);
                 continue;
             }
-            if (current_floor < MAX_FLOORS)
-                current_floor++;
-            else
+            /* Drain onboard passengers without accepting new riders. */
+            needs_down = 0;
+            list_for_each_entry(p, &elevator_passengers, list) {
+                if (p->dest_floor < current_floor) {
+                    needs_down = 1;
+                    break;
+                }
+            }
+            if (needs_down)
                 current_floor--;
+            else
+                current_floor++;
             mutex_unlock(&elevator_mutex);
             ssleep(2);
             continue;
